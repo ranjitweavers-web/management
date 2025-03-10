@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.management.management.DTO.LoginRequest;
 import com.management.management.model.User;
 import com.management.management.service.UserService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/user")
@@ -30,6 +33,12 @@ public class UserController {
         return userService.loginUser(loginRequest.getEmail() , loginRequest.getPassword());
        
     }
+
+    @GetMapping("/userDetails")
+    public String getUserDetails(@RequestParam LoginRequest loginRequest) {
+        return userService.userDetails(loginRequest.getEmail(), loginRequest.getPassword());
+    }
+    
 
 
 

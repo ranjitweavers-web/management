@@ -1,0 +1,30 @@
+User Registration
+URL: POST /register
+Description: Register a new user and send a confirmation email.
+Response: User details with a success message.
+
+
+User Login
+URL: POST /login
+Description: Authenticates a user and generates a JWT token.
+Response: JWT Token and success message.
+
+View Own Details
+URL: GET /user/details
+Headers: Authorization: Bearer <JWT-TOKEN>
+Description: Retrieve logged-in user details.
+
+View Order List
+URL: GET /user/orders
+Headers: Authorization: Bearer <JWT-TOKEN>
+Description: Logged-in users can view their order list.
+
+Place New Order
+URL: POST /user/orders
+Headers: Authorization: Bearer <JWT-TOKEN>
+Description: Users can place a new order. If stock is 0, they cannot purchase.
+
+User Logout
+URL: POST /logout
+Headers: Authorization: Bearer <JWT-TOKEN>
+Description: Logs out the user by invalidating the token.

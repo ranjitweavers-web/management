@@ -1,0 +1,36 @@
+Admin Login
+URL: POST /admin/login
+Response: JWT Token.
+
+ View All Users
+URL: GET /admin/users
+Headers: Authorization: Bearer <ADMIN-JWT-TOKEN>
+Description: Admin can view all registered users
+
+Manage Users
+URL: PUT /admin/users/{userId}
+Headers: Authorization: Bearer <ADMIN-JWT-TOKEN>
+Description: Admin can update user details.
+
+
+URL: DELETE /admin/users/{userId}
+Description: Admin can delete a user.
+
+Manage Products
+URL: GET /admin/products
+Description: Admin can view all products.
+URL: POST /admin/products
+
+
+Request Body:
+Edit
+{
+  "name": "Laptop",
+  "price": 1000,
+  "stock": 10
+}
+Description: Admin can add a new product.
+URL: PUT /admin/products/{productId}
+Description: Admin can update product details.
+URL: DELETE /admin/products/{productId}
+Description: Admin can delete a product.

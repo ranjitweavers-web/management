@@ -1,5 +1,7 @@
 package com.management.management.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,32 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User registerUser(User user){ 
-        // Encode password before saving 
-        user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword()));
-        User saveUser = userRepository.save(user);
 
+
+    // For Register New User
+    public String registerUser(User user) {
+        // Encode password before saving
+        user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword()));
+        userRepository.save(user);
         // now send welcome email
-        emailService.sendEmail(user.getEmail(), "Welcome !", "Hello "+ user.getUsername() + ", Your Account has been created successfully");
-        return saveUser;
-        
+        emailService.sendEmail(user.getEmail(), "Welcome !",
+                "Hello " + user.getUsername() + ", Your Account has been created successfully"
+                        + "Your information are \n" + user.getEmail() + "\n Your Role is " + user.getRole());
+        return "User Register Successfully!";
+
+    }
+
+    // For Login
+    public String loginUser(String email, String rawPassword) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && passwordEncoder.bCryptPasswordEncoder().matches(rawPassword, user.get().getPassword())){
+            return "Login Successfull!";
+
+        }
+
+        else{
+                 throw new RuntimeException("Invalid email or password");
+        }
+
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.management.management.DTO.LoginRequest;
 import com.management.management.model.User;
 import com.management.management.service.UserService;
 
@@ -18,10 +19,16 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user){
+    public String registerUser(@RequestBody User user){
         return userService.registerUser(user);
 
 
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequest loginRequest) {
+        return userService.loginUser(loginRequest.getEmail() , loginRequest.getPassword());
+       
     }
 
 

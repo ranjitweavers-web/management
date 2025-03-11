@@ -1,7 +1,5 @@
 package com.management.management.model;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,15 +16,7 @@ public class User {
     private String email;
     private String password;
     private String role;
-    private List<Order> Orders;
-
-    public List<Order> getOrders() {
-        return Orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        Orders = orders;
-    }
+   
 
     public User() {
     }

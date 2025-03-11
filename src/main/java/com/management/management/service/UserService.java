@@ -4,7 +4,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.management.management.model.Order;
 import com.management.management.model.User;
+import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.UserRepository;
 import com.management.management.security.PasswordEncoder;
 
@@ -17,6 +20,8 @@ public class UserService {
     private EmailService emailService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrderRepository orderRepository;
 
     // For Register New User
     public String registerUser(User user) {
@@ -46,17 +51,38 @@ public class UserService {
 
     }
 
-
     // For Getting User Details
 
-    
-    public String userDetails(String email, String password){
+    public String userDetails(String email, String password) {
         Optional<User> userDetails = userRepository.findByEmail(email);
-        if(userDetails.isPresent()){
-             return "User Details are " + userDetails.get().getUsername() + " and " + userDetails.get().getRole() + " and " + userDetails.get().getEmail() + " ";        }
-                     return password;
-                     
+        if (userDetails.isPresent()) {
+            return "User Details are " + userDetails.get().getUsername() + " and " + userDetails.get().getRole()
+                    + " and " + userDetails.get().getEmail() + " ";
+        }
+        return password;
 
-         
     }
+
+    // make order
+    public String makeOrder(Long userId, Order order) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        
+        if (!optionalUser.isPresent()) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+        
+        User user = optionalUser.get();
+        
+        // Check if product is available
+        if (order.getQuantity() <= 0) {
+            return "Order cannot be placed. Item is out of stock.";
+        }
+        
+        order.setUsers(user); // Associate order with user
+        orderRepository.save(order); // Save the order
+    
+        return "Order placed successfully!";
+    }
+    
+
 }

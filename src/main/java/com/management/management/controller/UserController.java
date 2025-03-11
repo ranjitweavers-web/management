@@ -1,12 +1,14 @@
 package com.management.management.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.management.management.DTO.LoginRequest;
+import com.management.management.model.Order;
 import com.management.management.model.User;
 import com.management.management.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,12 @@ public class UserController {
     }
     
 
+    @PostMapping("/makeOrder")
+    public ResponseEntity<String> makeOrder(@RequestParam Long userId, @RequestBody Order order) {
+    String response = userService.makeOrder(userId, order);
+    return ResponseEntity.ok(response);
+}
+    
 
 
 

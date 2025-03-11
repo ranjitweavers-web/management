@@ -4,12 +4,12 @@ Response: JWT Token.
 
  View All Users
 URL: GET /admin/users
-Headers: Authorization: Bearer <ADMIN-JWT-TOKEN>
+Headers: Authorization:   
 Description: Admin can view all registered users
 
 Manage Users
 URL: PUT /admin/users/{userId}
-Headers: Authorization: Bearer <ADMIN-JWT-TOKEN>
+Headers: Authorization:   
 Description: Admin can update user details.
 
 

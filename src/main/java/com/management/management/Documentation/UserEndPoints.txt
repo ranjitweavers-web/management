@@ -11,20 +11,20 @@ Response: JWT Token and success message.
 
 View Own Details
 URL: GET /user/details
-Headers: Authorization: Bearer <JWT-TOKEN>
+Headers: Authorization:  
 Description: Retrieve logged-in user details.
 
 View Order List
 URL: GET /user/orders
-Headers: Authorization: Bearer <JWT-TOKEN>
+Headers: Authorization:  
 Description: Logged-in users can view their order list.
 
 Place New Order
 URL: POST /user/orders
-Headers: Authorization: Bearer <JWT-TOKEN>
+Headers: Authorization:  
 Description: Users can place a new order. If stock is 0, they cannot purchase.
 
 User Logout
 URL: POST /logout
-Headers: Authorization: Bearer <JWT-TOKEN>
+Headers: Authorization:  
 Description: Logs out the user by invalidating the token.

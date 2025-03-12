@@ -12,6 +12,7 @@ import com.management.management.model.Order;
 import com.management.management.model.User;
 import com.management.management.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -42,11 +43,13 @@ public class UserController {
     }
     
 
-    @PostMapping("/makeOrder")
-    public ResponseEntity<String> makeOrder(@RequestParam Long userId, @RequestBody Order order) {
+    @PostMapping("/makeOrder/{userId}")
+    public ResponseEntity<String> makeOrder(@PathVariable Long userId, @RequestBody Order order) {
     String response = userService.makeOrder(userId, order);
     return ResponseEntity.ok(response);
 }
+
+
     
 
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.management.management.model.Product;
 import com.management.management.model.User;
+import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
 import com.management.management.security.PasswordEncoder;
@@ -24,6 +25,7 @@ public class AdminService {
     PasswordEncoder passwordEncoder;
     @Autowired
     ProductRepository productRepository;
+    
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -128,10 +130,6 @@ public class AdminService {
 
     }
 
-    // See All Orders of Users by User id
-
-    // public List<Order> allOrders(Long id){
-
-    // }
+   
 
 }

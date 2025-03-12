@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.management.management.model.Order;
+import com.management.management.model.Product;
 import com.management.management.model.User;
 import com.management.management.repositories.OrderRepository;
+import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
 import com.management.management.security.PasswordEncoder;
 
@@ -22,6 +24,8 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     // For Register New User
     public String registerUser(User user) {
@@ -65,24 +69,36 @@ public class UserService {
 
     // make order
     public String makeOrder(Long userId, Order order) {
+        // Check if user exists
         Optional<User> optionalUser = userRepository.findById(userId);
-        
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found with ID: " + userId);
         }
-        
-        User user = optionalUser.get();
-        
-        // Check if product is available
-        if (order.getQuantity() <= 0) {
-            return "Order cannot be placed. Item is out of stock.";
+
+        // Check if product exists
+        Optional<Product> optionalProduct = productRepository.findById(order.getProduct().getId());
+        if (optionalProduct.isEmpty()) {
+            throw new RuntimeException("Product not found with ID: " + order.getProduct().getId());
         }
-        
-        order.setUsers(user); // Associate order with user
-        orderRepository.save(order); // Save the order
-    
-        return "Order placed successfully!";
+
+        User user = optionalUser.get();
+        Product product = optionalProduct.get();
+
+        // Ensure sufficient stock
+        if (product.getQuantity() < order.getQuantity()) {
+            return "Insufficient stock! Available: " + product.getQuantity();
+        }
+
+        // Reduce product stock
+        product.setQuantity(product.getQuantity() - order.getQuantity());
+        productRepository.save(product); // Save updated product stock
+
+        // Set user and product in order
+        order.setUsers(user);
+        order.setProduct(product);
+        orderRepository.save(order); // Save order
+
+        return "Order placed successfully! Remaining stock: " + product.getQuantity();
     }
-    
 
 }

@@ -104,12 +104,10 @@ public class UserService {
 
     // See All My Own Orders
 
-    public List<Order> getOrdersByUserId(Long userId){
-       return orderRepository.findByUsersId(userId);
-
+    public List<Order> getOrdersByUserId(Long userId) {
+        return orderRepository.findByUsersId(userId);
 
     }
-
 
     // Delete Own Orders
     public String deleteOrder(Long orderId, Long userId) {
@@ -122,6 +120,31 @@ public class UserService {
             return "Order not found or you do not have permission to delete it.";
         }
     }
-    // 
+    // Update Own Order
+
+    public String updateOrder(Long orderId, Long userId, Order updatedOrder) {
+        Optional<Order> optionalOrder = orderRepository.findByIdAndUsersId(orderId, userId);
+
+        if (optionalOrder.isPresent()) {
+            Order existingOrder = optionalOrder.get();
+            
+            // Update order details 
+            existingOrder.setProduct(updatedOrder.getProduct());
+            existingOrder.setQuantity(updatedOrder.getQuantity());
+            existingOrder.setStatus(updatedOrder.getStatus());
+
+            orderRepository.save(existingOrder);
+            return "Order updated successfully!";
+        } else {
+            return "Order not found or does not belong to the user.";
+        }
+    }
+
+    // See all Products
+
+    public List<Product> seeAllProducts(){
+         return productRepository.findAll();
+    }
+
 
 }

@@ -7,8 +7,11 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.management.management.model.Order;
 import com.management.management.model.Product;
 import com.management.management.model.User;
+import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
 import com.management.management.security.PasswordEncoder;
@@ -24,7 +27,8 @@ public class AdminService {
     PasswordEncoder passwordEncoder;
     @Autowired
     ProductRepository productRepository;
-    
+    @Autowired
+    OrderRepository orderRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -47,9 +51,8 @@ public class AdminService {
                 user.setEmail(updatedUser.getEmail());
             }
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-                user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(updatedUser.getPassword())); // Encode
-                                                                                                             // the
-                                                                                                             // password
+                user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(updatedUser.getPassword()));
+                // password
             }
             if (updatedUser.getRole() != null) {
                 user.setRole(updatedUser.getRole());
@@ -103,21 +106,24 @@ public class AdminService {
 
     // Update Products by Admin
 
-    public Product updateProduct(Long id, Product product) {
-        Optional<?> getProduct = userRepository.findById(id);
+    public String updateProduct(Long id, Product product) {
+        Optional<?> getProduct = productRepository.findById(id);
         if (getProduct.isPresent()) {
             product.setName(product.getName());
             product.setPrice(product.getPrice());
             product.setQuantity(product.getQuantity());
-            return productRepository.save(product);
-            
-        }else{
-            return product;
+            productRepository.save(product);
+            return "Product Successfully Added";
+
+        } else {
+            return "Failed to Update Product";
         }
-        
 
     }
 
-   
+    // Admin Can see All Orders
+    public List<Order> allOrders() {
+        return orderRepository.findAll();
+    }
 
 }

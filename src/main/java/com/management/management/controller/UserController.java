@@ -1,5 +1,7 @@
 package com.management.management.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +49,13 @@ public class UserController {
     public ResponseEntity<String> makeOrder(@PathVariable Long userId, @RequestBody Order order) {
     String response = userService.makeOrder(userId, order);
     return ResponseEntity.ok(response);
+}
+
+
+@GetMapping("/myOrders/{userId}")
+public List<Order> getMyOrders(@PathVariable Long userId){
+  return userService.getOrdersByUserId(userId);
+
 }
 
 

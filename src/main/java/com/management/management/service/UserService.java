@@ -1,5 +1,6 @@
 package com.management.management.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,5 +101,17 @@ public class UserService {
 
         return "Order placed successfully! Remaining stock: " + product.getQuantity();
     }
+
+    // See All My Own Orders
+
+    public List<Order> getOrdersByUserId(Long userId){
+       return orderRepository.findByUsersId(userId);
+
+
+    }
+
+
+    // Delete Own Orders
+    // 
 
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.management.management.model.Product;
 import com.management.management.model.User;
-import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
 import com.management.management.security.PasswordEncoder;
@@ -107,26 +106,15 @@ public class AdminService {
     public Product updateProduct(Long id, Product product) {
         Optional<?> getProduct = userRepository.findById(id);
         if (getProduct.isPresent()) {
-            Product product1 = (Product) getProduct.get();
-            if (product.getId() != null) {
-
-                product.setId(product.getId());
-            }
-            if (product.getName() != null) {
-
-                product.setName(product.getName());
-            }
-            if (product.getPrice() != 0) {
-                product.setPrice(product.getPrice());
-
-            }
-            if (product.getQuantity() != 0) {
-
-                product.setQuantity(product.getQuantity());
-            }
-            return productRepository.save(product1);
+            product.setName(product.getName());
+            product.setPrice(product.getPrice());
+            product.setQuantity(product.getQuantity());
+            return productRepository.save(product);
+            
+        }else{
+            return product;
         }
-        return product;
+        
 
     }
 

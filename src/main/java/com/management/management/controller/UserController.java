@@ -13,6 +13,8 @@ import com.management.management.DTO.LoginRequest;
 import com.management.management.model.Order;
 import com.management.management.model.User;
 import com.management.management.service.UserService;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +60,11 @@ public List<Order> getMyOrders(@PathVariable Long userId){
 
 }
 
+@DeleteMapping("/delete/{orderId}")
+public ResponseEntity<String> deleteOrder(@PathVariable Long orderId, @RequestParam Long userId) {
+    String response = userService.deleteOrder(orderId, userId);
+    return ResponseEntity.ok(response);
+}
 
     
 

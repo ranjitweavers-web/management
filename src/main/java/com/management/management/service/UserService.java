@@ -112,6 +112,16 @@ public class UserService {
 
 
     // Delete Own Orders
+    public String deleteOrder(Long orderId, Long userId) {
+        Optional<Order> optionalOrder = orderRepository.findByIdAndUsersId(orderId, userId);
+
+        if (optionalOrder.isPresent()) {
+            orderRepository.delete(optionalOrder.get());
+            return "Order deleted successfully!";
+        } else {
+            return "Order not found or you do not have permission to delete it.";
+        }
+    }
     // 
 
 }

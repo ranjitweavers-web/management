@@ -79,8 +79,15 @@ public class AdminService {
     }
 
     // Create Products Admin
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public String createProduct(Product product) {
+        int quantity = product.getQuantity();
+
+        if (quantity >= 1) {
+            productRepository.save(product);
+            return "Product Created";
+        } else {
+            return "Failed to Create Product";
+        }
 
     }
 

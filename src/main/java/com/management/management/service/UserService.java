@@ -1,14 +1,19 @@
 package com.management.management.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.management.management.model.Order;
 import com.management.management.model.Product;
 import com.management.management.model.User;
+import com.management.management.DTO.Status;
 import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
@@ -28,17 +33,27 @@ public class UserService {
     @Autowired
     private ProductRepository productRepository;
 
+    //
     // For Register New User
-    public String registerUser(User user) {
-        // Encode password before saving
-        user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword()));
-        userRepository.save(user);
-        // now send welcome email
-        emailService.sendEmail(user.getEmail(), "Welcome !",
-                "Hello " + user.getUsername() + ", Your Account has been created successfully"
-                        + "Your information are \n" + user.getEmail() + "\n Your Role is " + user.getRole());
-        return "User Register Successfully!";
+    public Map<Status, ResponseEntity<User>> registerUser(User user) {
+        Map<Status, ResponseEntity<User>> response = new HashMap<>();
 
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
+            response.put(Status.FAILED, ResponseEntity.status(HttpStatus.CONFLICT).build());
+            return response;
+        }
+        user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword()));
+
+        User savedUser = userRepository.save(user);
+
+        emailService.sendEmail(savedUser.getEmail(), "Welcome!",
+                "Hello " + savedUser.getUsername() + ", Your Account has been created successfully."
+                        + "\nEmail: " + savedUser.getEmail()
+                        + "\nRole: " + savedUser.getRole());
+
+        response.put(Status.SUCCESSFULL, ResponseEntity.status(HttpStatus.CREATED).body(savedUser));
+        return response;
     }
 
     // For Login
@@ -84,6 +99,9 @@ public class UserService {
 
         User user = optionalUser.get();
         Product product = optionalProduct.get();
+        if (order.getQuantity() < 1) {
+            return "Invalid Quantity" + " -> " + order.getQuantity();
+        }
 
         // Ensure sufficient stock
         if (product.getQuantity() < order.getQuantity()) {
@@ -92,12 +110,12 @@ public class UserService {
 
         // Reduce product stock
         product.setQuantity(product.getQuantity() - order.getQuantity());
-        productRepository.save(product); // Save updated product stock
+        productRepository.save(product);
 
         // Set user and product in order
         order.setUsers(user);
         order.setProduct(product);
-        orderRepository.save(order); // Save order
+        orderRepository.save(order);
 
         return "Order placed successfully! Remaining stock: " + product.getQuantity();
     }
@@ -127,8 +145,8 @@ public class UserService {
 
         if (optionalOrder.isPresent()) {
             Order existingOrder = optionalOrder.get();
-            
-            // Update order details 
+
+            // Update order details
             existingOrder.setProduct(updatedOrder.getProduct());
             existingOrder.setQuantity(updatedOrder.getQuantity());
             existingOrder.setStatus(updatedOrder.getStatus());
@@ -142,9 +160,8 @@ public class UserService {
 
     // See all Products
 
-    public List<Product> seeAllProducts(){
-         return productRepository.findAll();
+    public List<Product> seeAllProducts() {
+        return productRepository.findAll();
     }
-
 
 }

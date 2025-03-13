@@ -1,6 +1,7 @@
 package com.management.management.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.management.management.DTO.LoginRequest;
+import com.management.management.DTO.Status;
 import com.management.management.model.Order;
 import com.management.management.model.Product;
 import com.management.management.model.User;
@@ -30,9 +32,8 @@ public class UserController {
 
     // Register New user
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
+    public Map<Status,ResponseEntity<User> >registerUser(@RequestBody User user) {
         return userService.registerUser(user);
-
     }
 
     // Login controller

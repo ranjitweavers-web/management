@@ -1,5 +1,6 @@
 package com.management.management.controller;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -25,7 +25,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @GetMapping("/users")                                           
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return adminService.getAllUsers();
     }
@@ -45,7 +45,7 @@ public class AdminController {
     // Create Product by Admin
 
     @RequestMapping("/product/createProduct")
-    public Product createProduct(@RequestBody Product product) {
+    public String createProduct(@RequestBody Product product) {
         return adminService.createProduct(product);
     }
 
@@ -77,6 +77,5 @@ public class AdminController {
     public List<Order> getAllOrders() {
         return adminService.allOrders();
     }
-    
 
 }

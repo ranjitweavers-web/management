@@ -14,7 +14,7 @@ import com.management.management.model.User;
 import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
-import com.management.management.security.PasswordEncoder;
+import com.management.management.security.SecuriyConfigHelper;
 
 @Service
 public class AdminService {
@@ -24,7 +24,7 @@ public class AdminService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    SecuriyConfigHelper passwordEncoder;
     @Autowired
     ProductRepository productRepository;
     @Autowired

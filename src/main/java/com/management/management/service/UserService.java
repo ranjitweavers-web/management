@@ -8,30 +8,46 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.management.management.model.Order;
 import com.management.management.model.Product;
 import com.management.management.model.User;
+import com.management.management.DTO.LoginRequest;
 import com.management.management.DTO.Status;
+import com.management.management.configs.SecurityConfig;
 import com.management.management.repositories.OrderRepository;
 import com.management.management.repositories.ProductRepository;
 import com.management.management.repositories.UserRepository;
-import com.management.management.security.PasswordEncoder;
+import com.management.management.security.SecuriyConfigHelper;
+import com.management.management.util.JwtUtil;
 
 @Service
 public class UserService {
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private EmailService emailService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private SecurityConfig securityConfig;
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private SecuriyConfigHelper securiyConfigHelper;
+    @Autowired
+    JwtUtil jwtUtil;
+
+    UserService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     //
     // For Register New User
@@ -43,7 +59,7 @@ public class UserService {
             response.put(Status.FAILED, ResponseEntity.status(HttpStatus.CONFLICT).build());
             return response;
         }
-        user.setPassword(passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword()));
+        user.setPassword(securiyConfigHelper.bCryptPasswordEncoder().encode(user.getPassword()));
 
         User savedUser = userRepository.save(user);
 
@@ -57,11 +73,12 @@ public class UserService {
     }
 
     // For Login
-    public String loginUser(String email, String rawPassword) {
-        Optional<User> user = userRepository.findByEmail(email);
+    public String loginUser(LoginRequest LoginRequest) {
+        Optional<User> user = userRepository.findByEmail(LoginRequest.getEmail());
         if (user.isPresent()
-                && passwordEncoder.bCryptPasswordEncoder().matches(rawPassword, user.get().getPassword())) {
-            return "Login Successfull!";
+                && securiyConfigHelper.bCryptPasswordEncoder().matches(LoginRequest.getPassword(),
+                        user.get().getPassword())) {
+            return jwtUtil.generateToken(LoginRequest.getEmail());
 
         }
 

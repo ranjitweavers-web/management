@@ -28,14 +28,10 @@ import com.management.management.util.JwtUtil;
 @Service
 public class UserService {
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private EmailService emailService;
-    @Autowired
-    private SecurityConfig securityConfig;
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -46,7 +42,6 @@ public class UserService {
     JwtUtil jwtUtil;
 
     UserService(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     //
@@ -73,13 +68,14 @@ public class UserService {
     }
 
     // For Login
-    public String loginUser(LoginRequest LoginRequest) {
+    public Map<String,String> loginUser(LoginRequest LoginRequest) {
+        Map<String,String> loginMap = new HashMap<>();
         Optional<User> user = userRepository.findByEmail(LoginRequest.getEmail());
         if (user.isPresent()
                 && securiyConfigHelper.bCryptPasswordEncoder().matches(LoginRequest.getPassword(),
                         user.get().getPassword())) {
-            return jwtUtil.generateToken(LoginRequest.getEmail());
-
+                            loginMap.put("Login Successfull", jwtUtil.generateToken(LoginRequest.getEmail()));
+                 return loginMap;
         }
 
         else {

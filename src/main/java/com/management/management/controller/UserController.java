@@ -68,7 +68,7 @@ public class UserController {
     @DeleteMapping("myOrder/delete/{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable Long orderId, @RequestParam Long userId) {
         String response = userService.deleteOrder(orderId, userId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
 
     // Update Order
@@ -83,6 +83,11 @@ public class UserController {
     @GetMapping("/allProducts")
     public List<Product> allProducts() {
         return userService.seeAllProducts();
+    }
+
+    @GetMapping("/productDetails/{id}")
+    public String getProductDetails(@PathVariable Long id){
+        return userService.productDetails(id);
     }
     
 

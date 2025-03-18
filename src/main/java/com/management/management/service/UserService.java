@@ -68,14 +68,14 @@ public class UserService {
     }
 
     // For Login
-    public Map<String,String> loginUser(LoginRequest LoginRequest) {
-        Map<String,String> loginMap = new HashMap<>();
+    public Map<String, String> loginUser(LoginRequest LoginRequest) {
+        Map<String, String> loginMap = new HashMap<>();
         Optional<User> user = userRepository.findByEmail(LoginRequest.getEmail());
         if (user.isPresent()
                 && securiyConfigHelper.bCryptPasswordEncoder().matches(LoginRequest.getPassword(),
                         user.get().getPassword())) {
-                            loginMap.put("Login Successfull", jwtUtil.generateToken(LoginRequest.getEmail()));
-                 return loginMap;
+            loginMap.put("Login Successfull", jwtUtil.generateToken(LoginRequest.getEmail()));
+            return loginMap;
         }
 
         else {
@@ -175,6 +175,23 @@ public class UserService {
 
     public List<Product> seeAllProducts() {
         return productRepository.findAll();
+    }
+
+    // See Product Details by id
+    public String productDetails(Long id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isPresent()) {
+            Product details = productRepository.findProductById(id);
+            return "name is " + details.getName() + " and Price is " + details.getPrice() + " and Quantity is "
+                    + details.getQuantity();
+
+        } else {
+            Long recordRange = productRepository.numberOfRecords();
+            if(recordRange < id){
+                  return "Product id is Out of Range";
+            }
+            return "Product not Found!";
+        }
     }
 
 }
